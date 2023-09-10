@@ -1,0 +1,13 @@
+version: '1.29.2'
+
+services:
+  plex:
+    image: greensheep/plex-server-docker-rpi:latest
+    container_name: plex
+    network_mode: host
+    ports:
+      - "32400:32400"
+    restart: always
+    volumes:
+      - ~/media/plex/config:/config
+      - ~/media/plex/data:/data
