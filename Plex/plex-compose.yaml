@@ -9,5 +9,5 @@ services:
       - "32400:32400"
     restart: always
     volumes:
-      - ~/media/plex/config:/config
-      - ~/media/plex/data:/data
+      - /home/rsambhu/plex/config:/config
+      - /home/rsambhu/plex/data:/data
