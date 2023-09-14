@@ -4,10 +4,13 @@ services:
   plex:
     image: greensheep/plex-server-docker-rpi:latest
     container_name: plex
-    ports:
-      - "32400:32400"
+    network_mode: "host"
     restart: always
     volumes:
       - /external/plex/config:/config
       - /external/plex/data:/data
       - /external/plex/otherMedia:/otherMedia
+<<<<<<< HEAD
+=======
+      - /external/plex/transcode:/transcode
+>>>>>>> 5d563f1b0c4b0c0ab0d47d4507e63b4305f0e8cd
