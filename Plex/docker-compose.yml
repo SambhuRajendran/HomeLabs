@@ -10,3 +10,4 @@ services:
     volumes:
       - /external/plex/config:/config
       - /external/plex/data:/data
+      - /external/plex/otherMedia:/otherMedia
