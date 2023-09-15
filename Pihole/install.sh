@@ -1,5 +1,5 @@
 sudo mkdir ~/pihole
-sudo cp docker-compose.yaml ~/pihole
+sudo cp docker-compose.yml ~/pihole
 cd ~/pihole
 sudo systemctl stop systemd-resolve
 sudo systemctl disable systemd-resolve
