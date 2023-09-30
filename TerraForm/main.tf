@@ -33,7 +33,6 @@ resource "aws_instance" "test2" {
 
 }
 
-
 resource "aws_sns_topic" "terraform_notifications" {
   name = "ec2deploy"
 }
@@ -64,4 +63,3 @@ resource "null_resource" "notify_destroy" {
   }
   depends_on = [aws_instance.test1, aws_instance.test2]
 }
-
