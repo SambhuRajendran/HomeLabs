@@ -10,3 +10,11 @@ This project demonstrates setting up a home lab on Raspberry Pi devices to host 
 - Docker and Docker Compose installed on your Raspberry Pi.
 - Basic understanding of terminal commands and network configurations.
 
+
+
+### Installation Steps
+
+1. **Install Docker on Raspberry Pi:**
+   Utilize the `get-docker.sh` script to install Docker on your Raspberry Pi for running containerized applications.
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/SambhuRajendran/HomeLabs/Docker/get-docker.sh | sh
