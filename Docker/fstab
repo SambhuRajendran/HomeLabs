@@ -1,4 +1,0 @@
-UUID=42a22cb3-2f74-4bda-b89a-55489782e7e7  /nfs-server  ext4 defaults,auto,users,rw,nofail,noatime 0 0
-192.168.4.201:/nfs-server /plex nfs proto=tcp,port=2049,nofail 0 0
-
-
