@@ -1,0 +1,11 @@
+
+# tasks file for git_install
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install Git
+  ansible.builtin.apt:
+    name: git
+    state: present
