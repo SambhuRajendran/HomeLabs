@@ -1,6 +1,6 @@
 resource "proxmox_lxc" "production_lxc" {
   target_node  = "bhairavihypervisor"
-  hostname     = "terraform-testing"
+  hostname     = var.hostname
   ostemplate   = "local:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst"
   password     = "admin"
   unprivileged = true
@@ -18,7 +18,7 @@ resource "proxmox_lxc" "production_lxc" {
   network {
     name   = "eth0"
     bridge = "vmbr0"
-    ip     = "192.168.4.233/24"
+    ip     = var.ip_address / 24
     gw     = "192.168.4.1"
   }
 
