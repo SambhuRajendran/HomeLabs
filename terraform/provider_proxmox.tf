@@ -22,6 +22,6 @@ provider "proxmox" {
   pm_api_url          = variable.proxmox_api_url
   pm_api_token_id     = variable.proxmox_api_token_id
   pm_api_token_secret = variable.proxmox_api_token
-  pm_tls_insecure     = false #to not verify checking for certificates
+  pm_tls_insecure     = true #to not verify checking for certificates
 
 }
