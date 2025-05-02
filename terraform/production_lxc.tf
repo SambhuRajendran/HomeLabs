@@ -20,7 +20,6 @@ resource "proxmox_lxc" "production_lxc" {
     bridge = "vmbr0"
     ip     = "192.168.4.233/24"
     gw     = "192.168.4.1"
-    dns    = "192.168.4.230 1.1.1.1"
   }
 
 
