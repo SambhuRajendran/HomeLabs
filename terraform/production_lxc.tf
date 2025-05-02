@@ -30,20 +30,21 @@ resource "proxmox_lxc" "production_lxc" {
     ip     = "dhcp"
   }
 */
+}
 
-  #resource to notify to discord
-  resource "null_resource" "notify_discord" {
-    provisioner "local-exec" {
-      command = <<EOT
+#resource to notify in discord 
+resource "null_resource" "notify_discord" {
+  provisioner "local-exec" {
+    command = <<EOT
 curl -H "Content-Type: application/json" \
      -X POST \
      -d '{"content": "✅ Terraform apply completed successfully on `bhairavihypervisor`!"}' \
      "${var.discord_webhook}"
 EOT
-    }
-
-    depends_on = [proxmox_lxc.production_lxc] # or your for_each resources
   }
 
-
+  depends_on = [proxmox_lxc.production_lxc] # or your for_each resources
 }
+
+
+
