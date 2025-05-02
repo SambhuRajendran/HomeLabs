@@ -1,2 +1,4 @@
 variable "hostname" {}
-variable "ip_address" {}
+variable "ip_address" {
+  type = string
+}

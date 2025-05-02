@@ -18,7 +18,7 @@ resource "proxmox_lxc" "production_lxc" {
   network {
     name   = "eth0"
     bridge = "vmbr0"
-    ip     = "${each.value.ip}/24"
+    ip     = "${var.ip_address}/24"
     gw     = "192.168.4.1"
   }
 
