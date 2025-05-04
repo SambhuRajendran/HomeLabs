@@ -1,0 +1,126 @@
+{
+  "version": 4,
+  "terraform_version": "1.11.4",
+  "serial": 3,
+  "lineage": "3d24162d-6a79-1bab-640b-538095d29c88",
+  "outputs": {},
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "null_resource",
+      "name": "notify_discord",
+      "provider": "provider[\"registry.terraform.io/hashicorp/null\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "4317881280594585938",
+            "triggers": null
+          },
+          "sensitive_attributes": [],
+          "dependencies": [
+            "proxmox_lxc.production_lxc"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "proxmox_lxc",
+      "name": "production_lxc",
+      "provider": "provider[\"registry.terraform.io/telmate/proxmox\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arch": "amd64",
+            "bwlimit": 0,
+            "clone": null,
+            "clone_storage": null,
+            "cmode": "tty",
+            "console": true,
+            "cores": 1,
+            "cpulimit": 0,
+            "cpuunits": 1024,
+            "current_node": "bhairavihypervisor",
+            "description": "",
+            "features": [],
+            "force": false,
+            "full": null,
+            "hagroup": "",
+            "hastate": "",
+            "hookscript": "",
+            "hostname": "ansible-node2",
+            "id": "bhairavihypervisor/lxc/108",
+            "ignore_unpack_errors": false,
+            "lock": "",
+            "memory": 512,
+            "mountpoint": [],
+            "nameserver": "",
+            "network": [
+              {
+                "bridge": "vmbr0",
+                "firewall": false,
+                "gw": "192.168.4.1",
+                "gw6": "",
+                "hwaddr": "BC:24:11:25:F8:3D",
+                "id": 0,
+                "ip": "192.168.4.242/24",
+                "ip6": "",
+                "mtu": 0,
+                "name": "eth0",
+                "rate": 0,
+                "tag": 0,
+                "trunks": "",
+                "type": "veth"
+              }
+            ],
+            "onboot": false,
+            "ostemplate": "local:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst",
+            "ostype": "debian",
+            "password": "admin",
+            "pool": null,
+            "protection": false,
+            "restore": false,
+            "rootfs": [
+              {
+                "acl": false,
+                "quota": false,
+                "replicate": false,
+                "ro": false,
+                "shared": false,
+                "size": "8G",
+                "storage": "local-lvm",
+                "volume": "local-lvm:vm-108-disk-0"
+              }
+            ],
+            "searchdomain": "",
+            "ssh_public_keys": null,
+            "start": false,
+            "startup": "",
+            "swap": 0,
+            "tags": "",
+            "target_node": "bhairavihypervisor",
+            "template": false,
+            "timeouts": null,
+            "tty": 2,
+            "unique": false,
+            "unprivileged": true,
+            "unused": [],
+            "vmid": 108
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "password"
+              }
+            ]
+          ],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWZhdWx0IjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19"
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}
