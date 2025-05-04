@@ -8,11 +8,9 @@ resource "proxmox_lxc" "production_lxc" {
   cores  = 1
   memory = 512
 
-  // Terraform will crash without rootfs defined
-
   rootfs {
     storage = "local-lvm"
-    size    = "8G" #disk size
+    size    = "8G" # disk size
   }
 
   network {
@@ -22,15 +20,18 @@ resource "proxmox_lxc" "production_lxc" {
     gw     = "192.168.4.1"
   }
 
-
-  /* DHCP config
-  network {
-    name   = "eth0"
-    bridge = "vmbr0"
-    ip     = "dhcp"
-  }
-*/
+  # If you want to keep it for reference, move the comment above it
+  # /*
+  # DHCP config
+  # network {
+  #   name   = "eth0"
+  #   bridge = "vmbr0"
+  #   ip     = "dhcp"
+  # }
+  # */
 }
+
+# ✅ Notification block is fine and will always run due to timestamp()
 resource "null_resource" "notify_discord" {
   provisioner "local-exec" {
     command = <<EOT
@@ -44,6 +45,7 @@ EOT
   triggers = {
     always_run = timestamp()
   }
-}
 
-#resource to notify in discord 
+  # Optional: add depends_on if you want to run *after* the LXC is created
+  depends_on = [proxmox_lxc.production_lxc]
+}
