@@ -31,20 +31,19 @@ resource "proxmox_lxc" "production_lxc" {
   }
 */
 }
-
-#resource to notify in discord 
 resource "null_resource" "notify_discord" {
   provisioner "local-exec" {
     command = <<EOT
 curl -H "Content-Type: application/json" \
      -X POST \
-     -d '{"content": "✅ Terraform apply completed successfully on `bhairavihypervisor`!"}' \
+     -d '{"content": "✅ Terraform apply completed successfully!"}' \
      "${var.discord_webhook}"
 EOT
   }
 
-  depends_on = [proxmox_lxc.production_lxc] # or your for_each resources
+  triggers = {
+    always_run = timestamp()
+  }
 }
 
-
-
+#resource to notify in discord 
