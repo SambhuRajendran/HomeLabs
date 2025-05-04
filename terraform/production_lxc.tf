@@ -37,7 +37,7 @@ resource "null_resource" "notify_discord" {
     command = <<EOT
 curl -H "Content-Type: application/json" \
      -X POST \
-     -d '{"content": "✅ Terraform apply completed successfully!"}' \
+     -d '{"content": "✅ Terraform apply completed successfully on Proxmox hypervisor!"}' \
      "${var.discord_webhook}"
 EOT
   }
