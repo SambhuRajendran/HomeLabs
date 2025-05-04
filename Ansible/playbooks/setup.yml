@@ -1,0 +1,7 @@
+---
+- name: Install Git and Docker on all lab machines
+  hosts: lab
+  become: true
+  roles:
+    - git_install
+    - docker_install

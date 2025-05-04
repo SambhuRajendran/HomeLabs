@@ -1,6 +1,0 @@
----
-- name: Install Git on all lab machines
-  hosts: lab
-  become: true
-  roles:
-    - git_install
