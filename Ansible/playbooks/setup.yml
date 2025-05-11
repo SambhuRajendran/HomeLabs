@@ -1,7 +1,12 @@
 ---
-- name: Install Git and Docker on all lab machines
+- name: Install Git, Docker, and K3s on all lab machines
   hosts: lab
   become: true
   roles:
     - git_install
     - docker_install
+    - role: xanmanning.k3s
+      vars:
+        k3s_become: true
+        k3s_control_node: "{{ inventory_hostname in groups['k3s_control'] }}"
+        k3s_agent_node: "{{ inventory_hostname in groups['k3s_agent'] }}"
