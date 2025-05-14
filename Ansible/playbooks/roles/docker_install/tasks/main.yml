@@ -45,17 +45,17 @@
   delay: 5
   until: docker_install_result is succeeded
 
-- name: Check if docker CLI is available
-  command: which docker
-  register: docker_cli_check
+- name: Check if Docker is working (can get version)
+  command: docker version --format '{{ .Server.Version }}'
+  register: docker_version_check
   ignore_errors: true
   changed_when: false
   become: true
 
-- name: Fail if docker CLI is still missing
+- name: Fail if Docker CLI or daemon is not usable
   fail:
-    msg: "❌ Docker installation failed. CLI not found on {{ inventory_hostname }}"
-  when: docker_cli_check.rc != 0
+    msg: "❌ Docker not working: CLI missing or daemon not running on {{ inventory_hostname }}"
+  when: docker_version_check.rc != 0
 
 - name: Start and enable Docker service
   service:
@@ -63,7 +63,7 @@
     state: started
     enabled: yes
   become: true
-  when: docker_cli_check.rc == 0
+  when: docker_version_check.rc == 0
 
 - name: Pull default Docker image
   community.docker.docker_image:
