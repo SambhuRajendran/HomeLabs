@@ -56,7 +56,7 @@
     update_cache: yes
   register: docker_install
   become: true
-  changed_when: "'installed' in docker_install.stdout or docker_install.changed"
+ 
 
 - name: Ensure docker is installed (check docker CLI exists)
   stat:
