@@ -6,7 +6,6 @@
     discord_webhook: "https://discord.com/api/webhooks/1367967683617886208/0uatkPCBQrjrIvGErc6l0lNXhoysLOfR7Kwcf7shEL80s0dyvZvTDcOHUO8jYrzh9hA6"
 
   tasks:
-
     - name: Update apt cache
       apt:
         update_cache: yes
@@ -16,7 +15,8 @@
         upgrade: dist
         autoremove: yes
         autoclean: yes
- - name: Notify Discord that system update was successful
+
+    - name: Notify Discord that system update was successful
       uri:
         url: "{{ discord_webhook }}"
         method: POST
@@ -27,4 +27,4 @@
           {
             "content": "✅ System update completed successfully on {{ inventory_hostname }}"
           }
-      run_once: true        
+      run_once: true
