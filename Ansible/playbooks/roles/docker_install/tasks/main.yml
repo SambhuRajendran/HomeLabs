@@ -1,42 +1,51 @@
 ---
-- name: Install aptitude
+- name: Install required base packages
   apt:
-    name: aptitude
-    state: latest
-    update_cache: true
-
-- name: Install required system packages
-  apt:
-    pkg:
+    name:
       - apt-transport-https
       - ca-certificates
       - curl
       - software-properties-common
-      - python3-pip
-      - virtualenv
-      - python3-setuptools
-    state: latest
-    update_cache: true
-
-- name: Add Docker GPG apt Key
-  apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
+      - gnupg
     state: present
-
-- name: Add Docker Repository
-  apt_repository:
-    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu noble stable
-    state: present
-
-- name: Update apt and install docker-ce
-  apt:
-    name: docker-ce
-    state: latest
     update_cache: yes
+  become: true
 
-- name: Install Docker Module for Python
-  pip:
+- name: Add Docker GPG key
+  shell: |
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+  args:
+    executable: /bin/bash
+  become: true
+  creates: /usr/share/keyrings/docker-archive-keyring.gpg
+
+- name: Add Docker APT repository
+  apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu noble stable"
+    state: present
+    filename: docker
+  become: true
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+  become: true
+
+- name: Install Docker Engine
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+  become: true
+
+- name: Ensure Docker service is started and enabled
+  service:
     name: docker
+    state: started
+    enabled: yes
+  become: true
 
 - name: Pull default Docker image
   community.docker.docker_image:
