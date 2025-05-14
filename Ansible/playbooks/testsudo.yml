@@ -1,0 +1,11 @@
+- name: Test sudo escalation
+  hosts: all
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: Whoami with sudo
+      command: whoami
+      register: result
+
+    - debug:
+        msg: "Running as user: {{ result.stdout }}"
