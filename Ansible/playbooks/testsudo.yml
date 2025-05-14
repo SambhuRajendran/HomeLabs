@@ -1,6 +1,5 @@
 - name: Test sudo escalation
   hosts: all
-  gather_facts: no
   become: yes
   tasks:
     - name: Whoami with sudo
