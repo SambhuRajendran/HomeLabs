@@ -44,7 +44,10 @@
       - containerd.io
     state: present
     update_cache: yes
+  register: docker_install_result
+  failed_when: docker_install_result.failed and 'Unable to locate package' in docker_install_result.msg
   become: true
+
 
 - name: Ensure Docker service is enabled and started
   service:
