@@ -8,11 +8,17 @@
     state: present
     update_cache: yes
 
-- name: Add Docker's official GPG key
+
+- name: Ensure Docker GPG key is added safely
   shell: |
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    set -e
+    apt-get update -qq
+    apt-get install -y curl gnupg ca-certificates
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+      gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
   args:
     executable: /bin/bash
+  become: true
 
 - name: Add Docker APT repository for Ubuntu 24.04 (fallback to jammy)
   apt_repository:
