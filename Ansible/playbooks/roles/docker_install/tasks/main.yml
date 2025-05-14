@@ -50,6 +50,7 @@
   register: docker_cli_check
   ignore_errors: true
   changed_when: false
+  become: true
 
 - name: Fail if docker CLI is still missing
   fail:
@@ -62,6 +63,7 @@
     state: started
     enabled: yes
   become: true
+  when: docker_cli_check.rc == 0
 
 - name: Pull default Docker image
   community.docker.docker_image:
