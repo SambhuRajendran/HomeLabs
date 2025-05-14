@@ -25,30 +25,14 @@
 
 - name: Add Docker Repository
   apt_repository:
-    repo: deb https://download.docker.com/linux/ubuntu noble stable
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu noble stable
     state: present
 
 - name: Update apt and install docker-ce
   apt:
     name: docker-ce
     state: latest
-    update_cache: true
-
-- name: Ensure pip3 and setuptools are installed
-  apt:
-    name:
-      - python3-pip
-      - python3-setuptools
-    state: present
     update_cache: yes
-  become: true
-
-- name: Install pip3 if missing
-  apt:
-    name: python3-pip
-    state: present
-  when: ansible_facts.packages.python3 is defined or ansible_facts.packages.python3-pip is not defined
-  become: true
 
 - name: Install Docker Module for Python
   pip:
