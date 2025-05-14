@@ -1,17 +1,57 @@
 ---
-- name: Add Docker repository
-  apt_repository:
-    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu jammy stable"
-    state: present
-
-- name: Install Docker
+- name: Install required dependencies
   apt:
-    name: docker-ce
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
     state: present
     update_cache: yes
+  become: true
 
-- name: Start Docker service
+- name: Add Docker GPG key (only if not already present)
+  shell: |
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker.gpg
+  args:
+    executable: /bin/bash
+  become: true
+  creates: /usr/share/keyrings/docker.gpg
+
+- name: Set Docker APT release codename fallback
+  set_fact:
+    docker_apt_release: >-
+      {% if ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'noble' %}
+        jammy
+      {% else %}
+        {{ ansible_distribution_release }}
+      {% endif %}
+
+- name: Add Docker APT repository (with jammy fallback for noble)
+  apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ docker_apt_release }} stable"
+    state: present
+    filename: docker
+  become: true
+
+- name: Update apt cache again
+  apt:
+    update_cache: yes
+  become: true
+
+- name: Install Docker CE from Docker repo
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+  become: true
+
+- name: Ensure Docker service is enabled and started
   service:
     name: docker
     state: started
     enabled: yes
+  become: true
