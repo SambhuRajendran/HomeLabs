@@ -1,15 +1,12 @@
 ---
-- name: Update and upgrade system packages with Discord alert
+- name: System update block with Discord alerts
   hosts: all
   become: true
   vars:
-    discord_webhook: "https://discord.com/api/webhooks/1367967683617886208/0uatkPCBQrjrIvGErc6l0lNXhoysLOfR7Kwcf7shEL80s0dyvZvTDcOHUO8jYrzh9hA6"  # replace with your URL
+    discord_webhook: "https://discord.com/api/webhooks/1367967683617886208/0uatkPCBQrjrIvGErc6l0lNXhoysLOfR7Kwcf7shEL80s0dyvZvTDcOHUO8jYrzh9hA6"  # replace with your actual webhook
 
   tasks:
-
-    - name: System update block
-      block:
-
+    - block:
         - name: Update apt cache
           apt:
             update_cache: yes
@@ -20,6 +17,7 @@
             autoremove: yes
             autoclean: yes
 
+      always:
         - name: Send success message to Discord
           uri:
             url: "{{ discord_webhook }}"
@@ -30,22 +28,6 @@
             body: >
               {
                 "content": "✅ System update completed successfully on {{ inventory_hostname }}"
-              }
-          delegate_to: localhost
-          run_once: true
-
-      rescue:
-
-        - name: Send failure message to Discord
-          uri:
-            url: "{{ discord_webhook }}"
-            method: POST
-            headers:
-              Content-Type: "application/json"
-            body_format: json
-            body: >
-              {
-                "content": "❌ System update FAILED on {{ inventory_hostname }}!"
               }
           delegate_to: localhost
           run_once: true
