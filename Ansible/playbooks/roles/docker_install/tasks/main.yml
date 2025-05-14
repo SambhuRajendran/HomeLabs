@@ -17,17 +17,16 @@
     mode: '0755'
   become: true
 
-- name: Add Docker GPG key (with timeout protection)
+- name: Add Docker GPG key (no skipping)
   shell: >
-    timeout 30 bash -c '
-      curl -fsSL https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg |
-      gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-    '
+    curl -fsSL https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg |
+    gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
   args:
     executable: /bin/bash
-  register: docker_gpg
-  failed_when: docker_gpg.rc != 0
+  register: add_docker_gpg
   become: true
+  changed_when: true
+  failed_when: add_docker_gpg.rc != 0
 
 - name: Set Docker APT release codename fallback
   set_fact:
@@ -47,13 +46,7 @@
     filename: docker
   become: true
 
-- name: Check if docker command exists
-  command: which docker
-  register: docker_installed
-  ignore_errors: true
-  changed_when: false
-
-- name: Force install Docker Engine if not present
+- name: Install Docker Engine packages
   apt:
     name:
       - docker-ce
@@ -61,24 +54,25 @@
       - containerd.io
     state: latest
     update_cache: yes
+  register: docker_install
   become: true
-  when: docker_installed.rc != 0
+  changed_when: "'installed' in docker_install.stdout or docker_install.changed"
 
-- name: Check if Docker service exists
+- name: Ensure docker is installed (check docker CLI exists)
   stat:
-    path: /lib/systemd/system/docker.service
-  register: docker_service_file
+    path: /usr/bin/docker
+  register: docker_cli_check
   become: true
 
-- name: Ensure Docker service is enabled and started
+- name: Enable and start Docker service
   service:
     name: docker
     state: started
     enabled: yes
-  when: docker_service_file.stat.exists
+  when: docker_cli_check.stat.exists
   become: true
 
-- name: Warn if Docker service is missing
+- name: Warn if docker command is still not found
   debug:
-    msg: "⚠️ Docker service not found. Docker may not have installed properly on {{ inventory_hostname }}"
-  when: not docker_service_file.stat.exists
+    msg: "❌ Docker command not found on {{ inventory_hostname }} — install likely failed"
+  when: not docker_cli_check.stat.exists
