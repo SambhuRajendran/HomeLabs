@@ -1,5 +1,6 @@
 ---
 - name: Install Docker via shell script
+  hosts: all
   become: true
   tasks:
     - name: Run Docker install script
