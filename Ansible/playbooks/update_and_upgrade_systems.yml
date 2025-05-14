@@ -1,10 +1,7 @@
 ---
-- name: Update system and notify Discord
+- name: Update and upgrade systems
   hosts: all
-  become: true
-  vars:
-    discord_webhook: "https://discord.com/api/webhooks/1367967683617886208/0uatkPCBQrjrIvGErc6l0lNXhoysLOfR7Kwcf7shEL80s0dyvZvTDcOHUO8jYrzh9hA6"
-
+  become: yes
   tasks:
     - name: Update apt cache
       apt:
@@ -18,7 +15,7 @@
 
     - name: Notify Discord that system update was successful
       uri:
-        url: "{{ discord_webhook }}"
+        url: "https://discord.com/api/webhooks/1367967683617886208/0uatkPCBQrjrIvGErc6l0lNXhoysLOfR7Kwcf7shEL80s0dyvZvTDcOHUO8jYrzh9hA6"
         method: POST
         headers:
           Content-Type: "application/json"
