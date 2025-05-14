@@ -4,10 +4,12 @@
   become: yes
   tasks:
     - name: Update apt cache
+      become: yes
       apt:
         update_cache: yes
 
     - name: Upgrade all packages
+      become: yes
       apt:
         upgrade: dist
         autoremove: yes
