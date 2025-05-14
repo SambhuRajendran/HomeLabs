@@ -25,6 +25,5 @@
         body_format: json
         body: >
           {
-            "content": "✅ System update completed successfully on {{ inventory_hostname }}"
+            "content": "✅ System update completed successfully on **{{ inventory_hostname }}**"
           }
-      run_once: true
