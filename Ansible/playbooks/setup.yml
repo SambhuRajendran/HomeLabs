@@ -5,8 +5,4 @@
   roles:
     - git_install
     - docker_install
-    - role: xanmanning.k3s
-      vars:
-        k3s_become: true
-        k3s_control_node: "{{ inventory_hostname in groups['k3s_control'] }}"
-        k3s_agent_node: "{{ inventory_hostname in groups['k3s_agent'] }}"
+    
