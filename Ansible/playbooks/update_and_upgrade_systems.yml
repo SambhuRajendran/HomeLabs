@@ -1,35 +1,31 @@
 ---
-- name: System update block with Discord alerts
+- name: Update system and notify Discord
   hosts: all
   become: true
   vars:
     discord_webhook: "https://discord.com/api/webhooks/1367967683617886208/0uatkPCBQrjrIvGErc6l0lNXhoysLOfR7Kwcf7shEL80s0dyvZvTDcOHUO8jYrzh9hA6"
 
   tasks:
-    - name: Update & notify block
-      block:
 
-        - name: Update apt cache
-          apt:
-            update_cache: yes
+    - name: Update apt cache
+      apt:
+        update_cache: yes
 
-        - name: Upgrade all packages
-          apt:
-            upgrade: dist
-            autoremove: yes
-            autoclean: yes
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
+        autoremove: yes
+        autoclean: yes
 
-      always:
-        - name: Send success message to Discord
-          uri:
-            url: "{{ discord_webhook }}"
-            method: POST
-            headers:
-              Content-Type: "application/json"
-            body_format: json
-            body: >
-              {
-                "content": "✅ System update completed successfully on {{ inventory_hostname }}"
-              }
-          delegate_to: localhost
-          run_once: true
+    - name: Notify Discord that system update was successful
+      uri:
+        url: "{{ discord_webhook }}"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+        body_format: json
+        body: >
+          {
+            "content": "✅ System update completed successfully on {{ inventory_hostname }}"
+          }
+      run_once: true
