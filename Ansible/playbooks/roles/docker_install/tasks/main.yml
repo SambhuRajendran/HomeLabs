@@ -17,7 +17,7 @@
   args:
     executable: /bin/bash
   become: true
-  creates: /usr/share/keyrings/docker-archive-keyring.gpg
+  changed_when: false
 
 - name: Add Docker APT repository
   apt_repository:
