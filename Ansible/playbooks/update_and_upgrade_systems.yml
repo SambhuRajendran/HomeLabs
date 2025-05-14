@@ -3,10 +3,12 @@
   hosts: all
   become: true
   vars:
-    discord_webhook: "https://discord.com/api/webhooks/1367967683617886208/0uatkPCBQrjrIvGErc6l0lNXhoysLOfR7Kwcf7shEL80s0dyvZvTDcOHUO8jYrzh9hA6"  # replace with your actual webhook
+    discord_webhook: "https://discord.com/api/webhooks/1367967683617886208/0uatkPCBQrjrIvGErc6l0lNXhoysLOfR7Kwcf7shEL80s0dyvZvTDcOHUO8jYrzh9hA6"
 
   tasks:
-    - block:
+    - name: Update & notify block
+      block:
+
         - name: Update apt cache
           apt:
             update_cache: yes
