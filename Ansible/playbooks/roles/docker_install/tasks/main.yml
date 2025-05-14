@@ -34,9 +34,11 @@
     state: latest
     update_cache: true
 
-- name: Ensure pip3 is installed
+- name: Ensure pip3 and setuptools are installed
   apt:
-    name: python3-pip
+    name:
+      - python3-pip
+      - python3-setuptools
     state: present
     update_cache: yes
   become: true
