@@ -1,78 +1,22 @@
----
-- name: Install required dependencies
-  apt:
-    name:
-      - curl
-      - gnupg
-      - ca-certificates
-      - lsb-release
-    state: present
-    update_cache: yes
-  become: true
+name: Install Docker
+hosts: ubuntu
+become: true
+tasks:
 
-- name: Ensure Docker keyring directory exists
-  file:
-    path: /usr/share/keyrings
-    state: directory
-    mode: '0755'
-  become: true
 
-- name: Add Docker GPG key (no skipping)
-  shell: >
-    curl -fsSL https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg |
-    gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-  args:
-    executable: /bin/bash
-  register: add_docker_gpg
-  become: true
-  changed_when: true
-  failed_when: add_docker_gpg.rc != 0
+    name: Add Docker repository
+    apt_repository:
+      repo: deb [docker.com/repo]
+      state: present
 
-- name: Set Docker APT release codename fallback
-  set_fact:
-    docker_apt_release: >-
-      {% if ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'noble' %}
-        jammy
-      {% elif ansible_distribution == 'Debian' and ansible_distribution_release == 'trixie' %}
-        bookworm
-      {% else %}
-        {{ ansible_distribution_release }}
-      {% endif %}
+    name: Install Docker
+    apt:
+      name: docker-ce
+      state: present
+      update_cache: yes
 
-- name: Add Docker APT repository
-  apt_repository:
-    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ docker_apt_release }} stable"
-    state: present
-    filename: docker
-  become: true
-
-- name: Install Docker Engine packages
-  apt:
-    name:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-    state: latest
-    update_cache: yes
-  register: docker_install
-  become: true
- 
-
-- name: Ensure docker is installed (check docker CLI exists)
-  stat:
-    path: /usr/bin/docker
-  register: docker_cli_check
-  become: true
-
-- name: Enable and start Docker service
-  service:
-    name: docker
-    state: started
-    enabled: yes
-  when: docker_cli_check.stat.exists
-  become: true
-
-- name: Warn if docker command is still not found
-  debug:
-    msg: "❌ Docker command not found on {{ inventory_hostname }} — install likely failed"
-  when: not docker_cli_check.stat.exists
+    name: Start Docker service
+    service:
+      name: docker
+      state: started
+      enabled: yes
