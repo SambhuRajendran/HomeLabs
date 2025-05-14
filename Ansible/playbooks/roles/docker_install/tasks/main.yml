@@ -37,15 +37,17 @@
   ignore_errors: true
   changed_when: false
   become: true
+  tags: always
 
-- name: Install Docker using Docker’s convenience script
+- name: Install Docker using Docker’s convenience script if missing
   shell: curl -fsSL https://get.docker.com | sh
   args:
     executable: /bin/bash
   register: docker_install_script
-  when: docker_check.rc != 0
   become: true
+  when: docker_check.rc != 0
   changed_when: true
+  tags: always
 
 - name: Start and enable Docker service
   service:
@@ -53,14 +55,19 @@
     state: started
     enabled: yes
   become: true
-  when: docker_check.rc == 0 or docker_install_script is changed
+  when: docker_check.rc == 0 or (docker_install_script is defined and docker_install_script is changed)
 
-- name: Ensure Docker service is running
-  service:
-    name: docker
-    state: started
-    enabled: yes
+- name: Re-check docker after install
+  command: docker --version
+  register: docker_confirm
+  changed_when: false
+  ignore_errors: true
   become: true
+
+- name: Fail if Docker still isn't installed
+  fail:
+    msg: "❌ Docker is STILL not installed after running get.docker.com on {{ inventory_hostname }}."
+  when: docker_confirm.rc != 0
 
 - name: Pull default Docker image
   community.docker.docker_image:
