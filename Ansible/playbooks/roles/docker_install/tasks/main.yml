@@ -1,12 +1,12 @@
 ---
-- name: Install required base packages
+- name: Install required system packages
   apt:
     name:
       - apt-transport-https
       - ca-certificates
       - curl
-      - software-properties-common
       - gnupg
+      - software-properties-common
     state: present
     update_cache: yes
   become: true
@@ -19,7 +19,7 @@
   become: true
   changed_when: false
 
-- name: Add Docker APT repository
+- name: Add Docker APT repository (noble)
   apt_repository:
     repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu noble stable"
     state: present
@@ -31,16 +31,32 @@
     update_cache: yes
   become: true
 
-- name: Install Docker Engine
+- name: Install Docker Engine packages
   apt:
     name:
       - docker-ce
       - docker-ce-cli
       - containerd.io
     state: present
+    update_cache: yes
+  register: docker_install_result
   become: true
+  retries: 3
+  delay: 5
+  until: docker_install_result is succeeded
 
-- name: Ensure Docker service is started and enabled
+- name: Check if docker CLI is available
+  command: which docker
+  register: docker_cli_check
+  ignore_errors: true
+  changed_when: false
+
+- name: Fail if docker CLI is still missing
+  fail:
+    msg: "❌ Docker installation failed. CLI not found on {{ inventory_hostname }}"
+  when: docker_cli_check.rc != 0
+
+- name: Start and enable Docker service
   service:
     name: docker
     state: started
