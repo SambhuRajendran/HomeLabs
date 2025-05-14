@@ -47,16 +47,22 @@
     filename: docker
   become: true
 
-- name: Install Docker Engine packages
+- name: Check if docker command exists
+  command: which docker
+  register: docker_installed
+  ignore_errors: true
+  changed_when: false
+
+- name: Force install Docker Engine if not present
   apt:
     name:
       - docker-ce
       - docker-ce-cli
       - containerd.io
-    state: present
+    state: latest
     update_cache: yes
   become: true
-  register: docker_install
+  when: docker_installed.rc != 0
 
 - name: Check if Docker service exists
   stat:
