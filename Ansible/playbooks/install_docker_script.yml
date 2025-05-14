@@ -4,5 +4,5 @@
   become: true
   tasks:
     - name: Run Docker install script
-      script: Ansible/playbooks/docker.sh
+      script: docker.sh
 
