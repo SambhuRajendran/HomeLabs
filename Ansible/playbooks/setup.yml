@@ -2,6 +2,8 @@
 - name: Install Git, Docker, and other apps on all lab machines
   hosts: all
   become: true
+  become_user: root
+  become_method: sudo
   gather_facts: true
   roles:
     - git_install
