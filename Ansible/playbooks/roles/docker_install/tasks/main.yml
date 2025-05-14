@@ -41,6 +41,12 @@
     update_cache: yes
   become: true
 
+- name: Install pip3 if missing
+  apt:
+    name: python3-pip
+    state: present
+  when: ansible_facts.packages.python3 is defined or ansible_facts.packages.python3-pip is not defined
+  become: true
 
 - name: Install Docker Module for Python
   pip:
