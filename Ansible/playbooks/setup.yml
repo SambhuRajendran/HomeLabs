@@ -1,7 +1,8 @@
 ---
-- name: Install Git, Docker, and K3s on all lab machines
-  hosts: lab
+- name: Install Git, Docker, and other apps on all lab machines
+  hosts: all
   become: true
+  gather_facts: true
   roles:
     - git_install
     - docker_install
