@@ -17,16 +17,16 @@
         autoremove: yes
         autoclean: yes
 
-- name: Notify Discord that system update was successful
-  uri:
-    url: "{{ discord_webhook }}"
-    method: POST
-    headers:
-      Content-Type: "application/json"
-    body_format: json
-    body: >
-      {
-        "content": "✅ System update completed successfully on {{ ansible_hostname }}"
-      }
-  delegate_to: localhost
-  run_once: true
+    - name: Notify Discord that system update was successful
+      uri:
+        url: "{{ discord_webhook }}"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+        body_format: json
+        body: >
+          {
+            "content": "✅ System update completed successfully on {{ ansible_hostname }}"
+          }
+      delegate_to: localhost
+      run_once: true
