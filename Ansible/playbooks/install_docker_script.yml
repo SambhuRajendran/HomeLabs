@@ -1,0 +1,6 @@
+---
+- name: Install Docker via shell script
+  become: true
+  tasks:
+    - name: Run Docker install script
+      script: ../../Scripts/semaphore-scripts/docker.sh
