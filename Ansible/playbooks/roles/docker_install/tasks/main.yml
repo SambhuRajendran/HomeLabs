@@ -11,13 +11,14 @@
     update_cache: yes
   become: true
 
-- name: Add Docker GPG key (only if not already present)
+- name: Add Docker GPG key (no skipping, rerun-safe)
   shell: |
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker.gpg
   args:
     executable: /bin/bash
   become: true
-  creates: /usr/share/keyrings/docker.gpg
+  changed_when: false  # avoid marking it as changed every time
+
 
 - name: Set Docker APT release codename fallback
   set_fact:
