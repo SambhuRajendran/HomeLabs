@@ -1,23 +1,17 @@
 ---
-name: Install Docker
-hosts: ubuntu
-become: true
-tasks:
+- name: Add Docker repository
+  apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu jammy stable"
+    state: present
 
+- name: Install Docker
+  apt:
+    name: docker-ce
+    state: present
+    update_cache: yes
 
-    name: Add Docker repository
-    apt_repository:
-      repo: deb [docker.com/repo]
-      state: present
-
-    name: Install Docker
-    apt:
-      name: docker-ce
-      state: present
-      update_cache: yes
-
-    name: Start Docker service
-    service:
-      name: docker
-      state: started
-      enabled: yes
+- name: Start Docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
