@@ -1,10 +1,10 @@
 ---
-- name: Ensure required dependencies are installed
+- name: Install required dependencies
   apt:
     name:
-      - ca-certificates
       - curl
       - gnupg
+      - ca-certificates
       - lsb-release
     state: present
     update_cache: yes
@@ -17,10 +17,10 @@
     mode: '0755'
   become: true
 
-- name: Add Docker's official GPG key safely with timeout
+- name: Add Docker GPG key (with timeout protection)
   shell: >
     timeout 30 bash -c '
-      curl -fsSL https://download.docker.com/linux/ubuntu/gpg |
+      curl -fsSL https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg |
       gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
     '
   args:
@@ -29,9 +29,20 @@
   failed_when: docker_gpg.rc != 0
   become: true
 
-- name: Add Docker APT repository for Ubuntu 24.04 (use jammy fallback)
+- name: Set Docker APT release codename fallback
+  set_fact:
+    docker_apt_release: >-
+      {% if ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'noble' %}
+        jammy
+      {% elif ansible_distribution == 'Debian' and ansible_distribution_release == 'trixie' %}
+        bookworm
+      {% else %}
+        {{ ansible_distribution_release }}
+      {% endif %}
+
+- name: Add Docker APT repository
   apt_repository:
-    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu jammy stable"
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ docker_apt_release }} stable"
     state: present
     filename: docker
   become: true
@@ -44,14 +55,24 @@
       - containerd.io
     state: present
     update_cache: yes
-  register: docker_install_result
-  failed_when: docker_install_result.failed and 'Unable to locate package' in docker_install_result.msg
   become: true
+  register: docker_install
 
+- name: Check if Docker service exists
+  stat:
+    path: /lib/systemd/system/docker.service
+  register: docker_service_file
+  become: true
 
 - name: Ensure Docker service is enabled and started
   service:
     name: docker
     state: started
     enabled: yes
+  when: docker_service_file.stat.exists
   become: true
+
+- name: Warn if Docker service is missing
+  debug:
+    msg: "⚠️ Docker service not found. Docker may not have installed properly on {{ inventory_hostname }}"
+  when: not docker_service_file.stat.exists
