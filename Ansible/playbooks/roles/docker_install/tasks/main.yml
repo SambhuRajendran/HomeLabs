@@ -14,7 +14,8 @@
     set -e
     apt-get update -qq
     apt-get install -y curl gnupg ca-certificates
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+
+    timeout 30 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
       gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
   args:
     executable: /bin/bash
