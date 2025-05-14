@@ -31,13 +31,21 @@
     - /usr/share/keyrings/docker-archive-keyring.gpg
   become: true
 
+- name: Check if docker CLI is installed
+  command: which docker
+  register: docker_check
+  ignore_errors: true
+  changed_when: false
+  become: true
+
 - name: Install Docker using Docker’s convenience script
   shell: curl -fsSL https://get.docker.com | sh
   args:
     executable: /bin/bash
   register: docker_install_script
   become: true
-  changed_when: "'Docker installation complete' in docker_install_script.stdout or docker_install_script.rc == 0"
+  when: docker_check.rc != 0
+  changed_when: true
 
 - name: Ensure Docker service is running
   service:
