@@ -3,6 +3,12 @@
   hosts: all
   become: true
   tasks:
-    - name: Run Docker install script
-      script: docker.sh
 
+    - name: Copy Docker install script to remote host
+      copy:
+        src: docker.sh
+        dest: /tmp/docker-install.sh
+        mode: '0755'
+
+    - name: Run Docker install script
+      command: /tmp/docker-install.sh
