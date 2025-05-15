@@ -26,3 +26,6 @@
           {
             "content": "✅ System update completed successfully on **{{ inventory_hostname }}**"
           }
+        status_code:
+          - 200
+          - 204
