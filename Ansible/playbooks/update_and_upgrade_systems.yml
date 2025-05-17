@@ -17,7 +17,7 @@
 
     - name: Notify Discord that system update was successful
       uri:
-        url: "https://discord.com/api/webhooks/1367967683617886208/0uatkPCBQrjrIvGErc6l0lNXhoysLOfR7Kwcf7shEL80s0dyvZvTDcOHUO8jYrzh9hA6"
+        url: "{{DiscordWebhook}}"
         method: POST
         headers:
           Content-Type: "application/json"
